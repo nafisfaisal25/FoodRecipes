@@ -83,13 +83,17 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (mRecipes.get(position).getTitle().equals("Loading...")) {
+        if (getLoadingCondition(position)) {
             return LOADING_TYPE;
         } else if (mRecipes.get(position).getSocial_rank() == -1){
             return CATEGORY_TYPE;
         } else {
             return RECIPE_TYPE;
         }
+    }
+
+    private boolean getLoadingCondition(int position) {
+        return mRecipes.get(position).getTitle().equals("Loading...") || (position == mRecipes.size() - 1 && position != 0);
     }
 
     public void displayLoading() {
@@ -145,5 +149,12 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         });
         mRecipes = recipes;
         notifyDataSetChanged();
+    }
+
+    public Recipe getSelectedRecipe(int position) {
+        if (mRecipes != null) {
+            return mRecipes.get(position);
+        }
+        return null;
     }
 }
