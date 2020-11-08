@@ -1,10 +1,13 @@
 package com.example.foodrecipes;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -12,21 +15,44 @@ import com.example.foodrecipes.models.Recipe;
 import com.example.foodrecipes.viewModels.RecipeDetailsViewModel;
 
 public class RecipeDetailsActivity extends BaseActivity {
+
+    private static final String TAG = "RecipeDetailsActivity";
     RecipeDetailsViewModel mRecipeDetailsViewModel;
+    CardView mParentView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
         mRecipeDetailsViewModel = new ViewModelProvider(this).get(RecipeDetailsViewModel.class);
+        mParentView = findViewById(R.id.card_view);
+        setParentVisibility(false);
+        setProgressbarVisibility(true);
         getIncomingIntent();
         subscribeObserver();
     }
 
+    private void setParentVisibility(boolean visibility) {
+        if (visibility == true) {
+            mParentView.setVisibility(View.VISIBLE);
+        } else {
+            mParentView.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void subscribeObserver() {
         mRecipeDetailsViewModel.getRecipe().observe(this, recipe -> {
-            if (recipe != null) {
+            if (recipe != null && recipe.getRecipe_id().equals(mRecipeDetailsViewModel.getRequestedRecipeId())) {
+                mRecipeDetailsViewModel.setRecipeRetrieved(true);
+                setParentVisibility(true);
+                setProgressbarVisibility(false);
                 setInfoToLayout(recipe);
+            }
+        });
+
+        mRecipeDetailsViewModel.getRecipeRequestTimeout().observe(this, aBoolean -> {
+            if (aBoolean && !mRecipeDetailsViewModel.didRecipeRetrieved()) {
+                Log.d(TAG, "subscribeObserver: Time out....");
             }
         });
     }

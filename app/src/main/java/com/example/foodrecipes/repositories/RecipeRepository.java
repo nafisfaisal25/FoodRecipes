@@ -31,6 +31,10 @@ public class RecipeRepository {
         return mRecipeAliClient.getRecipe();
     }
 
+    public LiveData<Boolean> getRecipeRequestTimeout() {
+        return mRecipeAliClient.getRecipeRequestTimeout();
+    }
+
     public void searchRecipesAPi(String query, int pageNumber) {
         if (pageNumber == 0) {
             pageNumber = 1;

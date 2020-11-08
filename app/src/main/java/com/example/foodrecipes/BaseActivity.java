@@ -1,5 +1,6 @@
 package com.example.foodrecipes;
 
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -16,5 +17,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         mProgressbar = constraintLayout.findViewById(R.id.progress_bar);
         getLayoutInflater().inflate(layoutResID, frameLayout, true);
         super.setContentView(constraintLayout);
+    }
+
+    public void setProgressbarVisibility(boolean visibility) {
+        if (visibility == true) {
+            mProgressbar.setVisibility(View.VISIBLE);
+        } else {
+            mProgressbar.setVisibility((View.INVISIBLE));
+        }
     }
 }
