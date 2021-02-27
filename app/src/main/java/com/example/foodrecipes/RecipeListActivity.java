@@ -72,6 +72,13 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 }
             }
         });
+        
+        mRecipeListViewModel.isQueryExhausted().observe(this, aBoolean -> {
+            if (aBoolean) {
+                Log.d(TAG, "subscribeObservers: query is exhausted");
+                mRecipeRecyclerAdapter.disPlayExhausted();
+            }
+        });
     }
 
     private void initSearchView() {

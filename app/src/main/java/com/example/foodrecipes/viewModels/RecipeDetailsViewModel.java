@@ -44,4 +44,8 @@ public class RecipeDetailsViewModel extends ViewModel {
     public String getRequestedRecipeId() {
         return mRequestedRecipeId;
     }
+
+    public void setRecipe(Recipe recipe) {
+        mRecipeRepository.setRecipe(recipe);
+    }
 }

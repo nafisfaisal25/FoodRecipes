@@ -25,6 +25,8 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private final static int RECIPE_TYPE = 1;
     private final static int LOADING_TYPE = 2;
     private final static int CATEGORY_TYPE = 3;
+    private final static int EXHAUSTED_TYPE = 4;
+
 
     private List<Recipe> mRecipes;
     private List<Recipe> mRecipesBackUp;
@@ -46,6 +48,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case LOADING_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_loading_list_item, parent, false);
                 return new HorizontalProgressViewHolder(view);
+            case EXHAUSTED_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_exhauted_query, parent, false);
+                return new ExhaustedQueryViewHolder(view);
             case CATEGORY_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_category_list_item, parent, false);
                 return new CategoryViewHolder(view, mOnRecipeListener);
@@ -83,7 +88,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (getLoadingCondition(position)) {
+        if (mRecipes.get(position).getTitle().equals("Exhausted...")) {
+            return EXHAUSTED_TYPE;
+        } else if (getLoadingCondition(position)) {
             return LOADING_TYPE;
         } else if (mRecipes.get(position).getSocial_rank() == -1){
             return CATEGORY_TYPE;
@@ -94,6 +101,21 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private boolean getLoadingCondition(int position) {
         return mRecipes.get(position).getTitle().equals("Loading...") || (position == mRecipes.size() - 1 && position != 0);
+    }
+
+    public void disPlayExhausted() {
+        hideLoading();
+        Recipe recipe = new Recipe();
+        recipe.setTitle("Exhausted...");
+        mRecipes.add(recipe);
+        notifyDataSetChanged();
+    }
+
+    public void hideLoading() {
+        if (isLoading()) {
+            mRecipes.remove(mRecipes.size()-1);
+            notifyDataSetChanged();
+        }
     }
 
     public void displayLoading() {

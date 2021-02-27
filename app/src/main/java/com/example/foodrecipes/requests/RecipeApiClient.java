@@ -53,6 +53,10 @@ public class RecipeApiClient {
         return mRecipe;
     }
 
+    public void setRecipe(Recipe recipe) {
+        mRecipe.setValue(recipe);
+    }
+
     public LiveData<Boolean> getRecipeRequestTimeout() {
         return mRecipeRequestTimeout;
     }

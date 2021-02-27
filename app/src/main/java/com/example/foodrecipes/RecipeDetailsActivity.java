@@ -3,7 +3,9 @@ package com.example.foodrecipes;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -52,9 +54,20 @@ public class RecipeDetailsActivity extends BaseActivity {
 
         mRecipeDetailsViewModel.getRecipeRequestTimeout().observe(this, aBoolean -> {
             if (aBoolean && !mRecipeDetailsViewModel.didRecipeRetrieved()) {
-                Log.d(TAG, "subscribeObserver: Time out....");
+                showErrorScreen("Error retrieving data. Check network connection.");
             }
         });
+    }
+
+    private void showErrorScreen(String errorMessage) {
+        setParentVisibility(true);
+        setProgressbarVisibility(false);
+        ((TextView)findViewById(R.id.recipe_title)).setText("Error retrieving recipe");
+        ((TextView)findViewById(R.id.recipe_social_score)).setText("");
+        setIngredients(new String[]{errorMessage});
+        Glide.with(getApplicationContext())
+                .load(R.drawable.ic_launcher_background)
+                .into((ImageView) findViewById(R.id.recipe_image));
     }
 
     private void setInfoToLayout(Recipe recipe) {
@@ -86,5 +99,11 @@ public class RecipeDetailsActivity extends BaseActivity {
             mRecipeDetailsViewModel.getRecipeApi(recipe.getRecipe_id());
         }
         return null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRecipeDetailsViewModel.setRecipe(null);
     }
 }
