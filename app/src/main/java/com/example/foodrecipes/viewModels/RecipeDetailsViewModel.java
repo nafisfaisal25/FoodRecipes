@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.foodrecipes.models.Recipe;
 import com.example.foodrecipes.repositories.RecipeRepository;
+import com.example.foodrecipes.util.Resource;
 
 public class RecipeDetailsViewModel extends AndroidViewModel {
     private RecipeRepository mRecipeRepository;
@@ -17,39 +18,9 @@ public class RecipeDetailsViewModel extends AndroidViewModel {
     public RecipeDetailsViewModel(Application application) {
         super(application);
         mRecipeRepository = RecipeRepository.getInstance(application);
-        mRecipeIsRetrieved = false;
     }
 
-//    public LiveData<Recipe> getRecipe() {
-//        return mRecipeRepository.getRecipe();
-//    }
-//
-//    public LiveData<Boolean> getRecipeRequestTimeout() {
-//        return mRecipeRepository.getRecipeRequestTimeout();
-//    }
-//
-//    public void getRecipeApi(String recipeId) {
-//        mRequestedRecipeId = recipeId;
-//        mRecipeRepository.getRecipesAPi(recipeId);
-//    }
-//
-//    public boolean didRecipeRetrieved() {
-//       return mRecipeIsRetrieved;
-//    }
-//
-//    public void setRecipeRetrieved(boolean flag) {
-//        mRecipeIsRetrieved = flag;
-//    }
-//
-//    public void setRequestedRecipeId(String requestedRecipeId) {
-//        this.mRequestedRecipeId = requestedRecipeId;
-//    }
-//
-//    public String getRequestedRecipeId() {
-//        return mRequestedRecipeId;
-//    }
-//
-//    public void setRecipe(Recipe recipe) {
-//        mRecipeRepository.setRecipe(recipe);
-//    }
+    public LiveData<Resource<Recipe>> searchRecipe(String recipeId) {
+        return mRecipeRepository.searchRecipeApi(recipeId);
+    }
 }

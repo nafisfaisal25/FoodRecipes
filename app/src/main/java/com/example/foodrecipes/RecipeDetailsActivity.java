@@ -31,7 +31,6 @@ public class RecipeDetailsActivity extends BaseActivity {
         setParentVisibility(false);
         setProgressbarVisibility(true);
         getIncomingIntent();
-        subscribeObserver();
     }
 
     private void setParentVisibility(boolean visibility) {
@@ -42,32 +41,35 @@ public class RecipeDetailsActivity extends BaseActivity {
         }
     }
 
-    private void subscribeObserver() {
-//        mRecipeDetailsViewModel.getRecipe().observe(this, recipe -> {
-//            if (recipe != null && recipe.getRecipe_id().equals(mRecipeDetailsViewModel.getRequestedRecipeId())) {
-//                mRecipeDetailsViewModel.setRecipeRetrieved(true);
-//                setParentVisibility(true);
-//                setProgressbarVisibility(false);
-//                setInfoToLayout(recipe);
-//            }
-//        });
-//
-//        mRecipeDetailsViewModel.getRecipeRequestTimeout().observe(this, aBoolean -> {
-//            if (aBoolean && !mRecipeDetailsViewModel.didRecipeRetrieved()) {
-//                showErrorScreen("Error retrieving data. Check network connection.");
-//            }
-//        });
-    }
+    private void subscribeObserver(String recipeId) {
+        mRecipeDetailsViewModel.searchRecipe(recipeId).observe(this, recipeResource -> {
+            if (recipeResource != null) {
+                if (recipeResource.data != null) {
+                    switch(recipeResource.status) {
+                        case LOADING: {
+                            setProgressbarVisibility(true);
+                            break;
+                        }
 
-    private void showErrorScreen(String errorMessage) {
-        setParentVisibility(true);
-        setProgressbarVisibility(false);
-        ((TextView)findViewById(R.id.recipe_title)).setText("Error retrieving recipe");
-        ((TextView)findViewById(R.id.recipe_social_score)).setText("");
-        setIngredients(new String[]{errorMessage});
-        Glide.with(getApplicationContext())
-                .load(R.drawable.ic_launcher_background)
-                .into((ImageView) findViewById(R.id.recipe_image));
+                        case ERROR: {
+                            Log.e(TAG, "subscribeObserver: status: ERROR, recipes: " + recipeResource.data.getTitle());
+                            Log.e(TAG, "subscribeObserver: error message: " + recipeResource.message);
+                            setParentVisibility(true);
+                            setProgressbarVisibility(false);
+                            setInfoToLayout(recipeResource.data);
+                            break;
+                        }
+
+                        case SUCCESS: {
+                            setParentVisibility(true);
+                            setProgressbarVisibility(false);
+                            setInfoToLayout(recipeResource.data);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void setInfoToLayout(Recipe recipe) {
@@ -86,6 +88,10 @@ public class RecipeDetailsActivity extends BaseActivity {
     }
 
     private void setIngredients(String[]ingredients) {
+        if (ingredients == null) {
+            ((TextView)findViewById(R.id.recipe_ingredients)).setText("Error retrieving data! Check network connection.");
+            return;
+        }
         String ingredient = "";
         for (int i = 0; i < ingredients.length; i++) {
             ingredient += ingredients[i] + "\n";
@@ -93,17 +99,12 @@ public class RecipeDetailsActivity extends BaseActivity {
         ((TextView)findViewById(R.id.recipe_ingredients)).setText(ingredient);
     }
 
-    private Recipe getIncomingIntent() {
+    private void getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
-//            mRecipeDetailsViewModel.getRecipeApi(recipe.getRecipe_id());
+            subscribeObserver(recipe.getRecipe_id());
         }
-        return null;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        mRecipeDetailsViewModel.setRecipe(null);
-    }
+
 }
