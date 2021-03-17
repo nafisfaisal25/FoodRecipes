@@ -27,7 +27,9 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     def lifecycle_version = "2.2.0"
+    def room_version = "2.2.6"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -38,6 +40,9 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    //ok http
+    implementation 'com.squareup.okhttp3:okhttp:3.0.0'
 
 
     // ViewModel
@@ -56,4 +61,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     //circular image view
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

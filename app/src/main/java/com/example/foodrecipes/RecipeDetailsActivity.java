@@ -43,20 +43,20 @@ public class RecipeDetailsActivity extends BaseActivity {
     }
 
     private void subscribeObserver() {
-        mRecipeDetailsViewModel.getRecipe().observe(this, recipe -> {
-            if (recipe != null && recipe.getRecipe_id().equals(mRecipeDetailsViewModel.getRequestedRecipeId())) {
-                mRecipeDetailsViewModel.setRecipeRetrieved(true);
-                setParentVisibility(true);
-                setProgressbarVisibility(false);
-                setInfoToLayout(recipe);
-            }
-        });
-
-        mRecipeDetailsViewModel.getRecipeRequestTimeout().observe(this, aBoolean -> {
-            if (aBoolean && !mRecipeDetailsViewModel.didRecipeRetrieved()) {
-                showErrorScreen("Error retrieving data. Check network connection.");
-            }
-        });
+//        mRecipeDetailsViewModel.getRecipe().observe(this, recipe -> {
+//            if (recipe != null && recipe.getRecipe_id().equals(mRecipeDetailsViewModel.getRequestedRecipeId())) {
+//                mRecipeDetailsViewModel.setRecipeRetrieved(true);
+//                setParentVisibility(true);
+//                setProgressbarVisibility(false);
+//                setInfoToLayout(recipe);
+//            }
+//        });
+//
+//        mRecipeDetailsViewModel.getRecipeRequestTimeout().observe(this, aBoolean -> {
+//            if (aBoolean && !mRecipeDetailsViewModel.didRecipeRetrieved()) {
+//                showErrorScreen("Error retrieving data. Check network connection.");
+//            }
+//        });
     }
 
     private void showErrorScreen(String errorMessage) {
@@ -96,7 +96,7 @@ public class RecipeDetailsActivity extends BaseActivity {
     private Recipe getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
-            mRecipeDetailsViewModel.getRecipeApi(recipe.getRecipe_id());
+//            mRecipeDetailsViewModel.getRecipeApi(recipe.getRecipe_id());
         }
         return null;
     }
@@ -104,6 +104,6 @@ public class RecipeDetailsActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRecipeDetailsViewModel.setRecipe(null);
+//        mRecipeDetailsViewModel.setRecipe(null);
     }
 }
